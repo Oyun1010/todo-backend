@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('./middleware/auth');
@@ -81,8 +80,15 @@ router.get('/userdata', auth, async (req, res) => {
         res.status(200).send(data);
     });
 })
-router.get('/update_user', auth, async (req, res) => {
-    await Users.findByIdAndUpdate(req.user_id, req.body);
+
+router.post('/update_user', auth, async (req, res) => {
+    console.log(req.body);
+    const { name, profile_pic, user_name } = req.body;
+    await Users.findByIdAndUpdate(req.user_id, {
+        name: name,
+        profile_pic: profile_pic,
+        user_name: user_name,
+    });
     res.status(200).send("update");
 })
 
@@ -124,7 +130,8 @@ router.get('/donelist', auth, async (req, res) => {
 
 router.post('/create_todo', auth, async (req, res) => {
     const { name, desc, start_date, end_date } = req.body;
-
+    console.log("----------------------");
+    console.log(req.body);
     await TodoLists.create({
         user_id: req.user_id,
         name: name,
@@ -136,7 +143,7 @@ router.post('/create_todo', auth, async (req, res) => {
 });
 
 router.post('/update_todo', auth, async (req, res) => {
-    
+
     await TodoLists.findByIdAndUpdate(req.body._id, req.body);
     res.status(200).send("update");
 });
